@@ -15,14 +15,19 @@ namespace BMP
 {
     Adafruit_BMP280 bmp;
 
-    void init()
+    bool init()
     {
-        if (!bmp.begin(0x76)) {
+        if (!bmp.begin(0x76))
+        {
             statusFlags.flags.bmp_inited = 0;
             Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
-        } else {
+            return false;
+        }
+        else
+        {
             statusFlags.flags.bmp_inited = 1;
             Serial.println(F("BMP280 sensor good to go!"));
+            return true;
         }
     }
 
@@ -30,6 +35,11 @@ namespace BMP
     {
         temperature = bmp.readTemperature(); // Celsius
         pressure = bmp.readPressure() / 100.0F; // hPa
+    }
+
+    float readAltitude(float seaLevelPressure = 1013.25F)
+    {
+        return bmp.readAltitude(seaLevelPressure); // meters
     }
 }
 
@@ -46,7 +56,7 @@ namespace MPU
 
     uint8_t Queue_Buffer[64];
 
-    void init()
+    bool init()
     {
         Serial.println(F("Initializing MPU 6050..."));
         mpu.initialize();
@@ -59,7 +69,7 @@ namespace MPU
         } else {
             Serial.println(F("MPU6050 connection failed"));
             statusFlags.flags.mpu_inited = 0;
-            return;
+            return false;
         }
 
         Serial.println(F("Initializing DMP..."));
@@ -78,7 +88,12 @@ namespace MPU
             Serial.print(devStatus);
             Serial.println(F(")"));
             statusFlags.flags.mpu_inited = 0;
+            return false;
         }
+        
+        // Set up interrupt
+        attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
+        return true;
     }
 
     void dmpGetLinearAccelInWorld(VectorFloat* v, VectorFloat* vReal, Quaternion* q) {

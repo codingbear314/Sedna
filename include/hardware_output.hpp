@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __ACTIONS_HPP__
-#define __ACTIONS_HPP__
+#ifndef __HARDWARE_OUTPUT_HPP__
+#define __HARDWARE_OUTPUT_HPP__
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -12,6 +12,9 @@ extern StatusFlags statusFlags;
 namespace BUZZER
 {
     constexpr uint8_t BUZZER_PIN = 47;
+    constexpr auto SUCCESS_FREQUENCY = 1000; // Hz
+    constexpr auto ERROR_FREQUENCY = 2000; // Hz
+    constexpr auto WARNING_FREQUENCY = 1500; // Hz
     void init()
     {
         pinMode(BUZZER_PIN, OUTPUT);
@@ -24,10 +27,22 @@ namespace BUZZER
         for (long i = 0; i < cycles; i++)
         {
             digitalWrite(BUZZER_PIN, HIGH);
-            delayMicroseconds(delayPeriod);
+            delayMicroseconds(delayPeriod); 
             digitalWrite(BUZZER_PIN, LOW);
             delayMicroseconds(delayPeriod);
         }
+    }
+    void Success()
+    {
+        play(SUCCESS_FREQUENCY, 500);
+    }
+    void Error()
+    {
+        play(ERROR_FREQUENCY, 500);
+    }
+    void Warning()
+    {
+        play(WARNING_FREQUENCY, 500);
     }
 }
 
@@ -93,4 +108,4 @@ namespace PYRO
     }
 }
 
-#endif // __ACTIONS_HPP__
+#endif // __HARDWARE_OUTPUT_HPP__

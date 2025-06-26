@@ -215,5 +215,21 @@ namespace Intercom
         statusFlags.flags.esp_now_inited = 1;
         return 1;
     }
+
+    enum messages
+    {
+        MSG_STATE_CHANGETO_ENGINE = 0,
+        MSG_STATE_CHANGETO_FREE_ASCENT,
+        MSG_STATE_CHANGETO_APOGEE,
+        MSG_STATE_CHANGETO_FREE_FALL,
+        MSG_STATE_CHANGETO_DROGUE_DESCENT,
+        MSG_STATE_CHANGETO_MAIN_DESCENT,
+        MSG_STATE_CHANGETO_TERMINAL_VELOCITY,
+        MSG_STATE_CHANGETO_TOUCHDOWN,
+        MSG_STATE_CHANGETO_RECOVERY,
+        MSG_STATE_CHANGETO_ERROR,
+
+        MSG_BEAT,
+    };
 } // namespace Intercom
 #endif // __INTERCOM_HPP__
